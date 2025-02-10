@@ -1,0 +1,20 @@
+asyncapi: '2.0.0'
+info:
+  title: Simple Test API
+  version: '1.0.0'
+  description: Eine einfache Test-API zum Debuggen.
+servers:
+  production:
+    url: test.mykafkaserver.com:9092
+    protocol: kafka
+channels:
+  test/channel:
+    subscribe:
+      message:
+        contentType: application/json
+        payload:
+          type: object
+          properties:
+            hello:
+              type: string
+              example: "world"

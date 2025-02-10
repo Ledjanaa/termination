@@ -1,0 +1,92 @@
+asyncapi: '2.6.0'
+info:
+  title: Premium Contract Termination API
+  version: '1.0.0'
+  description: |
+    Diese API beschreibt das Kafka-Event `PREMIUM_CONTRACT_TERMINATION_REQUESTED`, 
+    das zur Anforderung der Kündigung eines Premium-Vertrags verwendet wird.
+servers:
+  production:
+    url: kafka-broker:9092
+    protocol: kafka
+channels:
+  premium.contract.termination.requested:
+    description: Kafka-Topic für Premium Contract Termination Requests
+    publish:
+      summary: Fordert die Kündigung eines Premium-Vertrags bei iCON digital an.
+      message:
+        $ref: '#/components/messages/PremiumContractTerminationRequestedEvent'
+    bindings:
+      kafka:
+        topic: premium.contract.termination.requested
+        partitions: 3
+        replicas: 2
+        key:
+          type: string
+          description: Die eindeutige Request-ID zur Identifizierung des Events.
+components:
+  messages:
+    PremiumContractTerminationRequestedEvent:
+      name: PremiumContractTerminationRequestedEvent
+      title: Premium Contract Termination Requested Event
+      summary: Ein Event, das die Kündigung eines Premium-Vertrags anfordert.
+      contentType: application/json
+      headers:
+        type: object
+        properties:
+          eventTime:
+            type: string
+            format: date-time
+            description: Der Zeitstempel des Events im Format <YYYY-MM-DD>T<HH:MM:SS>.
+          eventType:
+            type: string
+            enum: [PREMIUM_CONTRACT_TERMINATION_REQUESTED]
+            description: Der Typ des Events.
+          eventMessageVersion:
+            type: string
+            example: "1.0"
+            description: Die Version des Event-Formats.
+          sourceSystem:
+            type: string
+            example: "INFOHUB"
+            description: Das System, das das Event gesendet hat.
+          targetSystem:
+            type: string
+            example: "iCON digital"
+            description: Das Zielsystem, das das Event verarbeitet.
+          requestId:
+            type: string
+            description: Diese ID wird von iCON digital im `PREMIUM_CONTRACT_TERMINATED`-Event zurückgegeben.
+      payload:
+        type: object
+        properties:
+          contractId:
+            type: string
+            example: "PREM-20204-0001"
+            description: Die ID des iCON digital Vertrags.
+          terminationTimestamp:
+            type: string
+            format: date-time
+            example: "2024-12-09T12:00:00"
+            description: Der Zeitstempel der Kündigung.
+          desiredTerminationDate:
+            type: string
+            format: date
+            example: "2024-03-31"
+            description: Das vom Kunden gewünschte Kündigungsdatum.
+          terminationReason:
+            type: string
+            example: "Cancellation due to insufficient support."
+            description: Der Grund für die Kündigung.
+          terminationUcon:
+            type: string
+            example: "DE12345"
+            description: Der Benutzer, der im MTP auf "Vertrag kündigen" geklickt hat.
+          terminatedBy:
+            type: string
+            example: "customer"
+            description: Gibt an, dass die Kündigung vom Kunden ausgelöst wurde.
+          ucid:
+            type: string
+            example: "DE12353"
+            description: UCID des Vertrags.
